@@ -11,7 +11,7 @@ interface AsteroidDao {
     fun getAsteroids(): LiveData<List<AsteroidEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAsteroids(asteroids: List<AsteroidEntity>) : Long
+    fun insertAsteroids(asteroids: List<AsteroidEntity>)
 
     @Query("SELECT * FROM asteroids_table WHERE closeApproachDate <=:date ORDER BY date(closeApproachDate) ASC ")
     fun getTodayAsteroid(date: String): LiveData<List<AsteroidEntity>>
