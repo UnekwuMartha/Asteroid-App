@@ -25,7 +25,7 @@ interface AsteroidService {
     ): String
 
     @GET("planetary/apod")
-    fun getPictureOfDay(@Query("api_key") apiKey: String = Constants.API_KEY): PictureOfDay
+    fun getPictureOfDay(@Query("api-key") apiKey : String): PictureOfDay
 }
 
 
@@ -47,5 +47,5 @@ object Network {
         return parseAsteroidsJsonResult(responseJsonObject)
     }
 
-    suspend fun getPictureOfDay() = retrofitService.getPictureOfDay(Constants.API_KEY)
+    fun getPictureOfDay() = retrofitService.getPictureOfDay(Constants.API_KEY)
 }

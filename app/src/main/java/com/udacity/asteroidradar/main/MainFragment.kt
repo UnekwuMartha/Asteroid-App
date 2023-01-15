@@ -28,8 +28,9 @@ class MainFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        val adapter = AsteroidAdapter(AsteroidAdapter.AsteroidClickListener{asteroid ->
-            viewModel.onAsteroidClicked(asteroid)})
+        val adapter = AsteroidAdapter(AsteroidAdapter.AsteroidClickListener { asteroidId ->
+            viewModel.onAsteroidClicked(asteroidId)
+        })
         binding.asteroidRecycler.adapter = adapter
 
         //navigating to detail fragment

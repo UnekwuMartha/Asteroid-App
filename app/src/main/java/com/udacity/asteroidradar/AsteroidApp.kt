@@ -24,14 +24,12 @@ class AsteroidApp : Application(){
 
     private fun setupWork() {
 
-        lateinit var constraints: Constraints
-
-        if (debug) {
-            constraints = Constraints.Builder()
+        var constraints: Constraints = if (debug) {
+            Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
         } else {
-            constraints = Constraints.Builder()
+            Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresCharging(true)
                 .apply {
