@@ -21,11 +21,10 @@ interface AsteroidService {
     suspend fun getAllAsteroids(
         @Query("start_date") startDate: String,
         @Query("end_date") endDate: String,
-        @Query("api_key") apiKey: String = Constants.API_KEY
-    ): String
+        @Query("api_key") apiKey: String): String
 
     @GET("planetary/apod")
-    fun getPictureOfDay(@Query("api-key") apiKey : String): PictureOfDay
+    suspend fun getPictureOfDay(@Query("api-key") apiKey : String): PictureOfDay
 }
 
 
@@ -38,7 +37,8 @@ object Network {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
 
-    private val retrofitService: AsteroidService = retrofit.create(AsteroidService::class.java)
+    private val retrofitService: AsteroidService by lazy { retrofit.create(AsteroidService::class.java)}
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getAsteroids(): List<Asteroid> {
@@ -47,5 +47,5 @@ object Network {
         return parseAsteroidsJsonResult(responseJsonObject)
     }
 
-    fun getPictureOfDay() = retrofitService.getPictureOfDay(Constants.API_KEY)
+    suspend fun getPictureOfDay() = retrofitService.getPictureOfDay(Constants.API_KEY)
 }
