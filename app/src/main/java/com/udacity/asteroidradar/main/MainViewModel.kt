@@ -18,21 +18,19 @@ import kotlinx.coroutines.launch
 class MainViewModel(application : Application) : AndroidViewModel(application) {
     private val database = AsteroidDatabase.getInstance(application)
     private val repository = Repository(database)
-    val asteroidsList = repository.asteroids
+    val asteroids = repository.asteroids
 
-    private val _pictureOfTheDay = MutableLiveData<PictureOfDay>()
+    private val _pictureOfDay = MutableLiveData<PictureOfDay>()
     val pictureOfDay: LiveData<PictureOfDay>
-        get() = _pictureOfTheDay
+        get() = _pictureOfDay
 
     private val _navigateToDetailFragment = MutableLiveData<Asteroid?>()
-    val navigateToDetailFragment: LiveData<Asteroid?>
+    val navigateToDetailFragment
         get() = _navigateToDetailFragment
 
     init {
-        viewModelScope.launch {
-                refreshAsteroidList()
-                getPictureOfDay()
-        }
+        refreshAsteroidList()
+        getPictureOfDay()
     }
 
     fun onAsteroidClicked(asteroid: Asteroid) {
@@ -53,7 +51,7 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
 
     private fun getPictureOfDay(){
         viewModelScope.launch {
-            _pictureOfTheDay.value = repository.getPictureOfDay()
+            _pictureOfDay.value = repository.getPictureOfDay()
         }
     }
 

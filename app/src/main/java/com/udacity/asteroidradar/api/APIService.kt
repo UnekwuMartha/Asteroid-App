@@ -24,7 +24,7 @@ interface AsteroidService {
         @Query("api_key") apiKey: String): String
 
     @GET("planetary/apod")
-    suspend fun getPictureOfDay(@Query("api-key") apiKey : String): PictureOfDay
+    suspend fun getPictureOfDay(@Query("api_key") apiKey : String): PictureOfDay
 }
 
 
@@ -34,7 +34,6 @@ object Network {
     private val retrofit = Retrofit.Builder().baseUrl(Constants.BASE_URL)
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
 
     private val retrofitService: AsteroidService by lazy { retrofit.create(AsteroidService::class.java)}

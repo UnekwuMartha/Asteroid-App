@@ -24,7 +24,9 @@ class AsteroidApp : Application(){
 
     private fun setupWork() {
 
-        var constraints: Constraints = if (debug) {
+        lateinit var constraints: Constraints
+
+        if (debug) {
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
