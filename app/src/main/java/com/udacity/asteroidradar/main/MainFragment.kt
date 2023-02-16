@@ -19,6 +19,8 @@ class MainFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
+    private lateinit var adapter: AsteroidAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = FragmentMainBinding.inflate(inflater)
@@ -28,7 +30,7 @@ class MainFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        val adapter = AsteroidAdapter(AsteroidAdapter.AsteroidClickListener { asteroidId ->
+        adapter = AsteroidAdapter(AsteroidAdapter.AsteroidClickListener { asteroidId ->
             viewModel.onAsteroidClicked(asteroidId)
         })
         binding.asteroidRecycler.adapter = adapter
@@ -53,6 +55,23 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.show_today_asteroid -> {
+                viewModel.getTodayAsteroids().observe(viewLifecycleOwner) {
+                    it?.let{adapter.submitList(it)}
+                }
+            }
+            R.id.show_week_asteroids -> {
+                viewModel.getWeekAsteroid().observe(viewLifecycleOwner) {
+                    it?.let{adapter.submitList(it)}
+                }
+            }
+            R.id.show_all_asteroids -> {
+                viewModel.asteroids.observe(viewLifecycleOwner) {
+                   it?.let{ adapter.submitList(it)}
+                }
+            }
+        }
         return true
     }
 }

@@ -26,13 +26,14 @@ class AsteroidApp : Application(){
 
         lateinit var constraints: Constraints
 
-        if (debug) {
+        constraints = if (debug) {
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
         } else {
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
                 .setRequiresCharging(true)
                 .apply {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -52,5 +53,6 @@ class AsteroidApp : Application(){
             Worker.WORK_NAME,
             ExistingPeriodicWorkPolicy.REPLACE,
             repeatingRequest)
+
     }
 }

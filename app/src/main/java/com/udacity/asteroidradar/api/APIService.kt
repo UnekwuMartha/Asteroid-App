@@ -36,12 +36,19 @@ object Network {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-    private val retrofitService: AsteroidService by lazy { retrofit.create(AsteroidService::class.java)}
+    val retrofitService: AsteroidService by lazy { retrofit.create(AsteroidService::class.java)}
 
 
     @RequiresApi(Build.VERSION_CODES.N)
+    private val startDate = getNextSevenDaysFormattedDates()[0]
+    @RequiresApi(Build.VERSION_CODES.N)
+    private val endDate = getNextSevenDaysFormattedDates()[5]
+    @RequiresApi(Build.VERSION_CODES.N)
+    private val weekEnd = getNextSevenDaysFormattedDates()[5]
+    @RequiresApi(Build.VERSION_CODES.N)
+
     suspend fun getAsteroids(): List<Asteroid> {
-        val responseStr = retrofitService.getAllAsteroids("", "", Constants.API_KEY)
+        val responseStr = retrofitService.getAllAsteroids(startDate, endDate, Constants.API_KEY)
         val responseJsonObject = JSONObject(responseStr)
         return parseAsteroidsJsonResult(responseJsonObject)
     }

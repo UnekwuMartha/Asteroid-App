@@ -5,12 +5,11 @@ import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
-import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.AsteroidApp
-import com.udacity.asteroidradar.PictureOfDay
-import com.udacity.asteroidradar.Repository
+import com.udacity.asteroidradar.*
+import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.database.AsteroidDao
 import com.udacity.asteroidradar.database.AsteroidDatabase
+import com.udacity.asteroidradar.database.asDomainModel
 import kotlinx.coroutines.launch
 
 
@@ -23,6 +22,10 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
     private val _pictureOfDay = MutableLiveData<PictureOfDay>()
     val pictureOfDay: LiveData<PictureOfDay>
         get() = _pictureOfDay
+
+    private val startDate = getNextSevenDaysFormattedDates()[0]
+    private val endDate = getNextSevenDaysFormattedDates()[5]
+    private val weekEnd = getNextSevenDaysFormattedDates()[5]
 
     private val _navigateToDetailFragment = MutableLiveData<Asteroid?>()
     val navigateToDetailFragment
@@ -45,14 +48,36 @@ class MainViewModel(application : Application) : AndroidViewModel(application) {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun refreshAsteroidList(){
         viewModelScope.launch {
-            repository.refreshAsteroids()
+            try {
+                repository.refreshAsteroids(startDate, endDate, Constants.API_KEY)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun getPictureOfDay(){
         viewModelScope.launch {
+            try{
             _pictureOfDay.value = repository.getPictureOfDay()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            }
         }
+    }
+
+    fun getWeekAsteroid(): LiveData<List<Asteroid>> {
+        val weekAsteroid = Transformations.map(repository.getWeekAsteroids(startDate, weekEnd)) {
+            it.asDomainModel()
+        }
+        return weekAsteroid
+    }
+
+    fun getTodayAsteroids(): LiveData<List<Asteroid>> {
+        val todayAsteroid = Transformations.map(repository.getTodayAsteroid(startDate)) {
+            it.asDomainModel()
+        }
+        return todayAsteroid
     }
 
 }
